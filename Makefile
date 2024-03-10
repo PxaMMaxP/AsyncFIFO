@@ -12,7 +12,7 @@
 # Version
 ###########################################################################
 
-Makefile_Version := 1.0.1
+Makefile_Version := 1.1.0
 $(info ISE Makefile Version: $(Makefile_Version))
 
 ###########################################################################
@@ -49,6 +49,9 @@ PAR_OPTS         ?=
 BITGEN_OPTS      ?=
 TRACE_OPTS       ?= -v 3 -n 3
 FUSE_OPTS        ?= -incremental
+
+ISIM_OPTS		 ?= -gui
+ISIM_CMD		 ?= vcd dumpfile $@.vcd\nvcd dumpvars -m /UUT\nrun all\nvcd dumpflush\nquit
  
 PROGRAMMER       ?= none
 PROGRAMMER_PRE   ?=
@@ -112,6 +115,25 @@ endef
 $(eval $(call process_sources,$(VHDSOURCE),VHD_LIBS,VHD_PATHS))
 # Run the function for Verilog sources
 $(eval $(call process_sources,$(VSOURCE),V_LIBS,V_PATHS))
+
+## Tests
+
+# Initialize the libs and paths variables for VHDL and Verilog testbenches
+VHD_TEST_PATHS ?=
+VHD_TEST_LIBS  ?=
+V_TEST_PATHS   ?=
+V_TEST_LIBS    ?=
+
+# Run the function for VHDL tests
+$(eval $(call process_sources,$(VHDTEST),VHD_TEST_LIBS,VHD_TEST_PATHS))
+# Run the function for Verilog tests
+$(eval $(call process_sources,$(VTEST),V_TEST_LIBS,V_TEST_PATHS))
+
+# Get the test names..
+TEST_PATHS = $(foreach file,$(V_TEST_PATHS) $(VHD_TEST_PATHS),$(basename $(file)))
+TEST_NAMES = $(foreach path,$(TEST_PATHS),$(notdir $(path)))
+TEST_EXES = $(foreach test,$(TEST_NAMES),build/isim_$(test)$(EXE))
+
 
 ###########################################################################
 # Default build
@@ -188,23 +210,22 @@ trace: project.cfg $(BITFILE)
 	@echo "\e[1;97m===== Timing Summary Report ======\e[m"
 	@echo "\e[1;35m ./build/$(PROJECT).twr\e[m\n"
 
-test: $(TEST_EXES)
+test: buildtest runtest
 
-build/isim_%$(EXE): $(V_PATHS) $(VHD_PATHS) build/$(PROJECT)_sim.prj $(VTEST) $(VHDTEST)
+runtest: ${TEST_NAMES}
+
+${TEST_NAMES}:
+	@grep --no-filename --no-messages 'ISIM:' $@.{v,vhd} | cut -d: -f2 > build/isim_$@.cmd
+	@echo "$(ISIM_CMD)" >> build/isim_$@.cmd
+	cd build ; ./isim_$@$(EXE) $(ISIM_OPTS) -tclbatch isim_$@.cmd ;
+
+buildtest: ${TEST_EXES}
+
+build/isim_%$(EXE): build/$(PROJECT)_sim.prj $(VSOURCE) $(VHDSOURCE) ${V_TEST_PATHS} $(VHD_TEST_PATHS)
 	$(call RUN,fuse) $(COMMON_OPTS) $(FUSE_OPTS) \
 	    -prj $(PROJECT)_sim.prj \
 	    -o isim_$*$(EXE) \
 	    work.$* work.glbl
-
-isim: build/isim_$(TB)$(EXE)
-	@grep --no-filename --no-messages 'ISIM:' $(TB).{v,vhd} | cut -d: -f2 > build/isim_$(TB).cmd
-	@echo "run all" >> build/isim_$(TB).cmd
-	cd build ; ./isim_$(TB)$(EXE) -tclbatch isim_$(TB).cmd
-
-isimgui: build/isim_$(TB)$(EXE)
-	@grep --no-filename --no-messages 'ISIM:' $(TB).{v,vhd} | cut -d: -f2 > build/isim_$(TB).cmd
-	@echo "run all" >> build/isim_$(TB).cmd
-	cd build ; ./isim_$(TB)$(EXE) -gui -tclbatch isim_$(TB).cmd
 
 
 ###########################################################################
