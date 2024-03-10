@@ -2,6 +2,7 @@
 --@ - Name:     **Asynchronous FIFO** <br>
 --@ - Version:  1.1.1 <br>
 --@ - Author:   __Maximilian Passarello ([Blog](mpassarello.de))__ <br>
+--@ - License:  [MIT](LICENSE) <br>
 --@               
 --@             Asynchronous FIFO with Gray Code Read & Write Pointer.
 --@             
