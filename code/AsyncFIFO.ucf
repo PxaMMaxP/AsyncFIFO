@@ -1,0 +1,9 @@
+## UCF only for synthesis-test
+
+NET WriteCLK	                    LOC = B8; 
+NET WriteCLK	                    TNM_NET = CLOCK;
+TIMESPEC TS_CLOCK = PERIOD CLOCK 150 MHz HIGH 50 %;
+
+NET ReadCLK	                    LOC = U9; 
+NET ReadCLK	                    TNM_NET = CLOCK;
+TIMESPEC TS_CLOCK = PERIOD CLOCK 150 MHz HIGH 50 %;
