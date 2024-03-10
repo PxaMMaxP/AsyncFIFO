@@ -1,11 +1,94 @@
 ----------------------------------------------------------------------------------
--- @name        Asynchronous FIFO
--- @version     1.1.1
--- @author      Maximilian Passarello (mpassarello.de)
---@             Asynchronous FIFO with Gray Code Adress
--- @history
--- - 1.1.0 (2009-05-16) Initial version
+--@ - Name:     **Asynchronous FIFO** <br>
+--@ - Version:  1.1.1 <br>
+--@ - Author:   __Maximilian Passarello ([Blog](mpassarello.de))__ <br>
+--@               
+--@             Asynchronous FIFO with Gray Code Read & Write Pointer.
+--@             
+--@ History:
+--@ - 1.1.1 (2024-03-10) Complete overhaul of AsyncFIFO: <br>
+--@                      *Added GrayCounter as a component <br>
+--@                      *Optimized port definitions <br>
+--@                      *Added timing diagrams <br>
+--@                      *Create async. Flag generation <br>
+--@ - 1.1.0 (2009-05-16) Initial version
 ----------------------------------------------------------------------------------
+--@ ## Timing Diagrams:
+--@ {
+--@     "signal": [
+--@         {
+--@             "name": "WriteCLK",
+--@             "wave": "p......",
+--@             "phase": 1.0,
+--@             "period": 2
+--@         },
+--@         {
+--@             "name": "WriteRST",
+--@             "wave": "x0..........."
+--@         },
+--@         {
+--@             "name": "WriteCE",
+--@             "wave": "x1..........."
+--@         },
+--@         {
+--@             "name": "WriteEnable",
+--@             "wave": "01.......x..."
+--@         },
+--@         {
+--@             "name": "DataIn",
+--@             "wave": "x=.=.=.=.x...",
+--@             "node": ".............",
+--@             "data": "First Second Third Fourth"
+--@         },
+--@         {
+--@             "name": "FullFlag",
+--@             "wave": "0........1..."
+--@         }
+--@     ],
+--@     "head": {
+--@         "text": "Write Cycles"
+--@     },
+--@     "foot": {
+--@         "text": "Four write cycles with transition to full FIFO."
+--@     }
+--@ }
+--@ {
+--@     "signal": [
+--@         {
+--@             "name": "ReadCLK",
+--@             "wave": "p......",
+--@             "period": 2
+--@         },
+--@         {
+--@             "name": "ReadRST",
+--@             "wave": "x0............"
+--@         },
+--@         {
+--@             "name": "ReadCE",
+--@             "wave": "x1............"
+--@         },
+--@         {
+--@             "name": "ReadEnable",
+--@             "wave": "0..1.......0.."
+--@         },
+--@         {
+--@             "name": "DataOut",
+--@             "wave": "xxxx=.=.=.=.xx",
+--@             "node": ".............",
+--@             "data": "First Second Third Fourth"
+--@         },
+--@         {
+--@             "name": "EmptyFlag",
+--@             "wave": "1.0.......1..."
+--@         }
+--@     ],
+--@     "head": {
+--@         "text": "Read Cycles"
+--@     },
+--@     "foot": {
+--@         "text": "Four read cycles with transition to empty FIFO."
+--@     }
+--@ }
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;

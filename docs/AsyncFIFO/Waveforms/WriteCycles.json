@@ -1,0 +1,38 @@
+{
+    "signal": [
+        {
+            "name": "WriteCLK",
+            "wave": "p......",
+            "phase": 1.0,
+            "period": 2
+        },
+        {
+            "name": "WriteRST",
+            "wave": "x0..........."
+        },
+        {
+            "name": "WriteCE",
+            "wave": "x1..........."
+        },
+        {
+            "name": "WriteEnable",
+            "wave": "01.......x..."
+        },
+        {
+            "name": "DataIn",
+            "wave": "x=.=.=.=.x...",
+            "node": ".............",
+            "data": "First Second Third Fourth"
+        },
+        {
+            "name": "FullFlag",
+            "wave": "0........1..."
+        }
+    ],
+    "head": {
+        "text": "Write Cycles"
+    },
+    "foot": {
+        "text": "Four write cycles with transition to full FIFO."
+    }
+}

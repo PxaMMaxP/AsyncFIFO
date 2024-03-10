@@ -1,0 +1,37 @@
+{
+    "signal": [
+        {
+            "name": "ReadCLK",
+            "wave": "p......",
+            "period": 2
+        },
+        {
+            "name": "ReadRST",
+            "wave": "x0............"
+        },
+        {
+            "name": "ReadCE",
+            "wave": "x1............"
+        },
+        {
+            "name": "ReadEnable",
+            "wave": "0..1.......0.."
+        },
+        {
+            "name": "DataOut",
+            "wave": "xxxx=.=.=.=.xx",
+            "node": ".............",
+            "data": "First Second Third Fourth"
+        },
+        {
+            "name": "EmptyFlag",
+            "wave": "1.0.......1..."
+        }
+    ],
+    "head": {
+        "text": "Read Cycles"
+    },
+    "foot": {
+        "text": "Four read cycles with transition to empty FIFO."
+    }
+}
