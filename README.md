@@ -10,7 +10,7 @@
 
 - Name: **Asynchronous FIFO** <br>
 - Version: 1.1.1 <br>
-- Author: **Maximilian Passarello ([Blog](mpassarello.de))** <br>
+- Author: **Maximilian Passarello ([Blog](https://mpassarello.de))** <br>
 
 Asynchronous FIFO with Gray Code Read & Write Pointer.
 
